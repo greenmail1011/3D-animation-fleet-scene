@@ -2,39 +2,41 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>法船啟航 ‧ 安東啟航 — 真實感 3D 場景</title>
 <style>
-  :root{ --gold:#f3d774; --gold-deep:#c79a32; --glass:rgba(10,22,38,0.55);
-    --glass-line:rgba(243,215,116,0.45); }
+  :root{ --gold:#f3d774; --gold-deep:#c79a32; --glass:rgba(8,18,32,0.40);
+    --glass-line:rgba(243,215,116,0.26); }
   *{ box-sizing:border-box; margin:0; padding:0; }
   html,body{ width:100%; height:100%; overflow:hidden; background:#0a2240;
     font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif; }
-  #app{ position:fixed; inset:0; }
-  canvas{ display:block; }
-  #title{ position:fixed; top:22px; left:24px; z-index:10; pointer-events:none;
+  #app{ position:fixed; inset:0; touch-action:none; }
+  canvas{ display:block; touch-action:none; }
+  #title{ position:fixed; top:calc(16px + env(safe-area-inset-top)); left:calc(18px + env(safe-area-inset-left)); z-index:10; pointer-events:none;
     color:#fff; text-shadow:0 2px 18px rgba(0,0,0,.55); }
   #title .zh{ font-size:30px; font-weight:800; letter-spacing:.22em;
     background:linear-gradient(180deg,#fff,var(--gold)); -webkit-background-clip:text;
     background-clip:text; -webkit-text-fill-color:transparent; }
   #title .sub{ font-size:13px; letter-spacing:.42em; color:var(--gold); margin-top:6px;
     -webkit-text-fill-color:initial; opacity:.92; }
-  #panel{ position:fixed; z-index:10; bottom:22px; left:50%; transform:translateX(-50%);
-    display:flex; gap:8px; align-items:center; padding:10px 12px; background:var(--glass);
+  #panel{ position:fixed; z-index:10; bottom:calc(18px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%);
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center;
+    max-width:calc(100vw - 20px); padding:10px 12px; background:var(--glass);
     border:1px solid var(--glass-line); border-radius:16px; backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px); box-shadow:0 10px 40px rgba(0,0,0,.45); }
-  .btn{ cursor:pointer; border:1px solid rgba(243,215,116,.35); color:#f7eecf;
-    background:rgba(255,255,255,.04); padding:9px 14px; border-radius:11px; font-size:14px;
+    -webkit-backdrop-filter:blur(10px); box-shadow:0 8px 30px rgba(0,0,0,.38); opacity:.66; transition:opacity .25s ease; }
+  #panel:hover,#panel:focus-within,#panel.lit{ opacity:1; }
+  .btn{ cursor:pointer; border:1px solid rgba(243,215,116,.20); color:rgba(247,238,207,.82);
+    background:rgba(255,255,255,.03); padding:8px 13px; border-radius:11px; font-size:13.5px;
     letter-spacing:.08em; transition:.18s; white-space:nowrap; }
-  .btn:hover{ background:rgba(243,215,116,.16); border-color:var(--gold); }
+  .btn:hover{ background:rgba(243,215,116,.16); border-color:var(--gold); color:#f7eecf; }
   .btn.active{ background:linear-gradient(180deg,var(--gold),var(--gold-deep));
     color:#3a2a06; border-color:var(--gold); font-weight:700; }
   .sep{ width:1px; height:26px; background:rgba(243,215,116,.25); margin:0 2px; }
   .hint{ color:#cfe0f5; font-size:12px; letter-spacing:.05em; opacity:.85; padding:0 6px; }
   .btn.icon{ padding:9px 12px; font-size:16px; line-height:1; }
-  #showBtn{ position:fixed; z-index:11; bottom:22px; left:50%; transform:translateX(-50%);
-    display:none; cursor:pointer; color:#f7eecf; background:var(--glass);
-    border:1px solid var(--glass-line); border-radius:12px; padding:9px 16px; font-size:13px;
+  #showBtn{ position:fixed; z-index:11; bottom:calc(18px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%);
+    display:none; cursor:pointer; color:#f7eecf; background:rgba(10,22,38,0.62);
+    border:1px solid rgba(243,215,116,.42); border-radius:12px; padding:10px 18px; font-size:13px;
     letter-spacing:.12em; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
     box-shadow:0 10px 40px rgba(0,0,0,.45); }
   #showBtn:hover{ border-color:var(--gold); background:rgba(243,215,116,.16); }
@@ -51,8 +53,15 @@
     justify-content:center; padding:30px; text-align:center; color:#ffdede;
     background:#1a0c0c; font-size:15px; line-height:1.8; }
   @media (max-width:560px){
-    #title .zh{ font-size:22px; } #title .sub{ font-size:11px; letter-spacing:.3em; }
-    .btn{ padding:8px 10px; font-size:12.5px; } .hint{ display:none; }
+    #title .zh{ font-size:21px; } #title .sub{ font-size:10.5px; letter-spacing:.28em; }
+    #panel{ gap:6px; padding:8px 9px; border-radius:14px; }
+    .btn{ padding:9px 11px; font-size:12.5px; }
+    .sep{ display:none; } .hint{ display:none; }
+  }
+  @media (max-width:380px){
+    #title .zh{ font-size:18px; } #title .sub{ letter-spacing:.2em; }
+    .btn{ padding:8px 9px; font-size:11.5px; letter-spacing:.04em; }
+    #panel{ gap:5px; }
   }
 </style>
 </head>
@@ -1156,7 +1165,7 @@ var clouds=[];
 
 /* ============ 相機系統 ============ */
 var target=new THREE.Vector3(0,5,-14);
-var cam={r:112,th:0.7,phi:1.0}, camTar={r:112,th:0.7,phi:1.0};
+var cam={r:112,th:0.7,phi:1.0}, camTar={r:112,th:0.7,phi:1.0}, fitScale=1;
 var autoSpin=true, dragging=false, lastX=0, lastY=0;
 var PRESETS={ orbit:{r:112,phi:0.98,spin:true,th:0.7}, side:{r:98,phi:1.26,spin:false,th:0.0},
   aerial:{r:185,phi:0.42,spin:true,th:0.9} };
@@ -1165,17 +1174,22 @@ function setMode(m){ var p=PRESETS[m]; if(!p)return; camTar.r=p.r; camTar.phi=p.
   document.querySelectorAll(".btn[data-mode]").forEach(function(b){ b.classList.toggle("active",b.dataset.mode===m); }); }
 document.querySelectorAll(".btn[data-mode]").forEach(function(b){ b.addEventListener("click",function(){ setMode(b.dataset.mode); }); });
 EL("resetBtn").addEventListener("click",function(){ setMode("orbit"); });
-function setUI(show){ EL("panel").style.display=show?"flex":"none"; EL("showBtn").style.display=show?"none":"block"; }
+function setUI(show){ EL("panel").style.display=show?"flex":"none"; EL("showBtn").style.display="none"; }  // 隱藏=完全隱藏(連顯示鈕都不留;點畫面或按 H 叫回)
 EL("hideBtn").addEventListener("click",function(){ setUI(false); });
 EL("showBtn").addEventListener("click",function(){ setUI(true); });
 window.addEventListener("keydown",function(e){ if((e.key==="h"||e.key==="H")&&!e.metaKey&&!e.ctrlKey&&!e.altKey){ setUI(EL("panel").style.display==="none"); } });
+var litT; function litPanel(){ var p=EL("panel"); if(p){ p.classList.add("lit"); clearTimeout(litT); litT=setTimeout(function(){ p.classList.remove("lit"); },2600); } }
+EL("panel").addEventListener("pointerdown",litPanel);
 var dom=renderer.domElement;
+var downX=0,downY=0,tapMoved=false;
 dom.addEventListener("pointerdown",function(e){ dragging=true; autoSpin=false; lastX=e.clientX; lastY=e.clientY;
-  dom.setPointerCapture(e.pointerId); });
+  downX=e.clientX; downY=e.clientY; tapMoved=false; dom.setPointerCapture(e.pointerId); });
 dom.addEventListener("pointermove",function(e){ if(!dragging)return; var dx=e.clientX-lastX,dy=e.clientY-lastY;
   lastX=e.clientX; lastY=e.clientY; camTar.th-=dx*0.005; camTar.phi-=dy*0.005;
-  camTar.phi=Math.max(0.12,Math.min(1.45,camTar.phi)); });
-function endDrag(){ dragging=false; }
+  camTar.phi=Math.max(0.12,Math.min(1.45,camTar.phi));
+  if(Math.abs(e.clientX-downX)>6||Math.abs(e.clientY-downY)>6) tapMoved=true; });
+function endDrag(){ dragging=false;
+  if(!tapMoved && EL("panel").style.display==="none") setUI(true); }   // 點按(非拖曳)叫回完全隱藏的控制列
 dom.addEventListener("pointerup",endDrag); dom.addEventListener("pointercancel",endDrag);
 dom.addEventListener("wheel",function(e){ e.preventDefault(); camTar.r*=(1+(e.deltaY>0?1:-1)*0.08);
   camTar.r=Math.max(48,Math.min(420,camTar.r)); },{passive:false});
@@ -1208,13 +1222,16 @@ function animate(){
   if(autoSpin&&!dragging) camTar.th+=dt*0.075;
   cam.r+=(camTar.r-cam.r)*0.07; cam.th+=(camTar.th-cam.th)*0.07; cam.phi+=(camTar.phi-cam.phi)*0.07;
   var sp=Math.sin(cam.phi),cp=Math.cos(cam.phi);
-  camera.position.set(target.x+cam.r*sp*Math.cos(cam.th), target.y+cam.r*cp, target.z+cam.r*sp*Math.sin(cam.th));
+  var rr=cam.r*fitScale; camera.position.set(target.x+rr*sp*Math.cos(cam.th), target.y+rr*cp, target.z+rr*sp*Math.sin(cam.th));
   camera.lookAt(target.x,target.y+Math.sin(t*0.5)*0.6,target.z);
 
   renderer.render(scene,camera);
 }
-addEventListener("resize",function(){ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth,innerHeight); });
+function fitView(){ var aspect=innerWidth/innerHeight; camera.aspect=aspect;
+  if(aspect<1){ camera.fov=54; fitScale=Math.max(1,Math.min(1.6,0.72/Math.max(aspect,0.42))); }  // 直式手機:加大視角並拉遠,寬廣艦隊入鏡
+  else { camera.fov=46; fitScale=1; }
+  camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); }
+addEventListener("resize",fitView); addEventListener("orientationchange",fitView); fitView();
 
 animate();
 setTimeout(function(){ EL("loader").classList.add("hide"); }, 700);
